@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TodoProvider } from "./Contexts";
 import TodoForm from "./Components/TodoForm";
-import TodoItem from "./Components/TodoItem";
+import TodoItem from "./Components/TodoItem"
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -16,7 +16,7 @@ function App() {
         ...prevTodos,
       ];
     });
-  };
+  };  
 
   const updateTodo = (id, todo) => {
     setTodos((prev) => {

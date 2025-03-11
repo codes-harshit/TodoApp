@@ -1,42 +1,59 @@
 import { useEffect, useState } from "react";
 import { TodoProvider } from "./Contexts";
 import TodoForm from "./Components/TodoForm";
-import TodoItem from "./Components/TodoItem"
+import TodoItem from "./Components/TodoItem";
+import { api } from "./api/axiosApi.js";
 
 function App() {
   const [todos, setTodos] = useState([]);
 
-  const addTodo = (todo) => {
+  const addTodo = async (todo) => {
+    await api.post("", todo, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     setTodos((prevTodos) => {
-      return [
-        {
-          id: Date.now(),
-          ...todo,
-        },
-        ...prevTodos,
-      ];
+      return [todo, ...prevTodos];
     });
-  };  
+  };
 
-  const updateTodo = (id, todo) => {
+  const deleteTodo = async (id) => {
+    const deletedTodo = await api.delete(`/${id}`);
+    setTodos((prev) => prev.filter((prevTodo) => prevTodo._id != id));
+  };
+
+  const updateTodo = async (id, todo) => {
+    const updatedTodo = await api.put(`/${id}`, todo, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(updateTodo);
     setTodos((prev) => {
-      return prev.map((prevTodo) => (prevTodo.id === id ? todo : prevTodo));
+      return prev.map((prevTodo) => (prevTodo._id === id ? todo : prevTodo));
     });
   };
 
-  const deleteTodo = (id) => {
-    setTodos((prev) => prev.filter((prevTodo) => prevTodo.id != id));
+  const toggleCompleted = (id, todo) => {
+    const updatedTodo = api.put(`/${id}`, todo, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setTodos((prev) => {
+      return prev.map((prevTodo) => (prevTodo._id === id ? todo : prevTodo));
+    });
   };
 
-  const toggleCompleted = (id) => {
-    setTodos((prev) =>
-      prev.map((prevTodo) =>
-        prevTodo.id === id
-          ? { ...prevTodo, completed: !prevTodo.completed }
-          : prevTodo
-      )
-    );
+  const fetchTodos = async () => {
+    const res = await api.get("");
+    setTodos(res.data.data);
   };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem("todos"));
@@ -63,18 +80,11 @@ function App() {
             <TodoForm />
           </div>
           <div className="flex flex-wrap gap-y-3">
-            {
-              todos.map((todo) => (
-                <div 
-                className=" w-full"
-                key={todo.id}
-                >
-
-                  <TodoItem todo = {todo}/>
-                </div>
-
-              ))
-            }
+            {todos.map((todo) => (
+              <div className=" w-full" key={todo._id}>
+                <TodoItem todo={todo} />
+              </div>
+            ))}
           </div>
         </div>
       </div>

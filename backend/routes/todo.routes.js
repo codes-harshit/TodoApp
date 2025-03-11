@@ -1,13 +1,16 @@
 import express, { Router } from "express";
+import {
+  addTodo,
+  deleteTodo,
+  getTodos,
+  updateTodo,
+} from "../controllers/todo.controller.js";
 
 const todoRouter = Router();
 
-todoRouter.get("/", (req, res) => {
-  return res.status(200).json({
-    success: true,
-    data: "hello world",
-    message: "hello world",
-  });
-});
+todoRouter.get("/", getTodos);
+todoRouter.post("/", addTodo);
+todoRouter.delete("/:id", deleteTodo);
+todoRouter.put("/:id", updateTodo);
 
 export default todoRouter;

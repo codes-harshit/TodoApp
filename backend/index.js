@@ -13,7 +13,7 @@ app.use(
 );
 app.use(express.json());
 
-app.use("/api/v1/todo", todoRouter);
+app.use("/api/v1/todos", todoRouter);
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {

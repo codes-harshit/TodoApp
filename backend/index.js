@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import todoRouter from "./routes/todo.routes.js";
 import { connectDB } from "./config/connectDB.js";
+import userRouter from "./routes/user.routes.js";
 
 dotenv.config();
 const app = express();
@@ -14,9 +15,10 @@ app.use(
 app.use(express.json());
 
 app.use("/api/v1/todos", todoRouter);
+app.use("/api/v1/users", userRouter);
 
 const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  connectDB();
+app.listen(port, async () => {
+  await connectDB();
   console.log(`App listening on port ${port}`);
 });
